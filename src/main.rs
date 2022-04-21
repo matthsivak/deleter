@@ -17,27 +17,21 @@ fn scan_and_delete(path: &str, pattern: &str) {
 
         if path.is_dir() {
             if file_name == pattern {
+                println!("Removing {}", path.display());
                 fs::remove_dir_all(&path).unwrap();
             } else {
                 scan_and_delete(&path.to_str().unwrap(), pattern);
             }
         } else if file_name == pattern {
-            match fs::remove_file(&path) {
-                Ok(_) => println!("{}", file_name),
-                Err(err) => panic!("{}", err),
-            }
-        }
-        if file_name.contains(pattern) {
-            if path.is_dir() {
-                fs::remove_dir_all(&path).unwrap();
-            }
+            println!("Removing {}", path.to_str().unwrap());
+            fs::remove_file(&path);
         }
     }
 }
 
 fn main() {
     let path = "./";
-    let pattern = "test";
+    let pattern = &std::env::args().nth(1).unwrap().to_string();
 
     scan_and_delete(path, pattern);
 }
